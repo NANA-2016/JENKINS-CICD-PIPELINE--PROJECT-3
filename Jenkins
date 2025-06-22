@@ -4,13 +4,20 @@ pipeline {
     environment {
         IMAGE_NAME = 'jenkins-html-project'
         CONTAINER_NAME = 'jenkins-html-container'
-        HOST_PORT = '8081' // Changed from 8080 to 8081
+        HOST_PORT = '8081'  // Change host port here if needed
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git credentialsId: 'git', url: 'git@github.com:YOUR_USERNAME/YOUR_REPO.git', branch: 'main'
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: 'main']],
+                    userRemoteConfigs: [[
+                        credentialsId: 'git',
+                        url: 'git@github.com:NANA-2016/JENKINS-CICD-PIPELINE--PROJECT-3.git'
+                    ]]
+                ])
             }
         }
 
@@ -25,6 +32,11 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
+                    // Stop and remove old container if exists
+                    sh "docker stop ${CONTAINER_NAME} || true"
+                    sh "docker rm ${CONTAINER_NAME} || true"
+
+                    // Run container with specified host port
                     sh "docker run -d -p ${HOST_PORT}:80 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
                 }
             }
@@ -34,6 +46,7 @@ pipeline {
     post {
         always {
             script {
+                // Cleanup: stop and remove container, remove image
                 sh "docker stop ${CONTAINER_NAME} || true"
                 sh "docker rm ${CONTAINER_NAME} || true"
                 sh "docker rmi ${IMAGE_NAME} || true"

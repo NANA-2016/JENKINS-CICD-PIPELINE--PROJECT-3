@@ -1,10 +1,12 @@
 pipeline {
     agent any
+
     environment {
         IMAGE_NAME = 'jenkins-html-project'
         CONTAINER_NAME = 'jenkins-html-container'
         HOST_PORT = '8081'
     }
+
     stages {
         stage('Test SSH Access') {
             steps {
@@ -13,6 +15,7 @@ pipeline {
                 }
             }
         }
+
         stage('Checkout Code') {
             steps {
                 sshagent(credentials: ['git']) {
@@ -20,6 +23,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -27,6 +31,7 @@ pipeline {
                 }
             }
         }
+
         stage('Run Docker Container') {
             steps {
                 script {
@@ -37,6 +42,7 @@ pipeline {
             }
         }
     }
+
     post {
         always {
             echo 'Cleaning up...'
@@ -54,6 +60,3 @@ pipeline {
         }
     }
 }
-
-
-

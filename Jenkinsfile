@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     environment {
@@ -28,15 +27,15 @@ pipeline {
                 }
             }
         }
-       stage('Run Docker Container') {
-    steps {
-        script {
-            sh "docker stop ${CONTAINER_NAME} || true"
-            sh "docker rm ${CONTAINER_NAME} || true"
-            sh "docker run -d -p ${HOST_PORT}:80 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    sh "docker stop ${CONTAINER_NAME} || true"
+                    sh "docker rm ${CONTAINER_NAME} || true"
+                    sh "docker run -d -p ${HOST_PORT}:80 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
+                }
+            }
         }
-    }
-}
     }
     post {
         always {
@@ -55,3 +54,6 @@ pipeline {
         }
     }
 }
+
+
+

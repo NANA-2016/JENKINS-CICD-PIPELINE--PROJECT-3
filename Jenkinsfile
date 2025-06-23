@@ -55,4 +55,3 @@ pipeline {
         }
     }
 }
->>>>>>> 83d6718 (clear jenkinsfile)

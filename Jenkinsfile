@@ -12,7 +12,12 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: "${BRANCH}", url: "${REPO_URL}"
+                script {
+                    checkout([$class: 'GitSCM',
+                        branches: [[name: "*/${BRANCH}"]],
+                        userRemoteConfigs: [[url: "${REPO_URL}"]]
+                    ])
+                }
             }
         }
 

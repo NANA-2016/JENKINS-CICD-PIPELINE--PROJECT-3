@@ -5,22 +5,9 @@ pipeline {
         IMAGE_NAME = 'jenkins-html-project'
         CONTAINER_NAME = 'jenkins-html-container'
         HOST_PORT = '8082'
-        REPO_URL = 'https://github.com/NANA-2016/JENKINS-CICD-PIPELINE--PROJECT-3.git'
-        BRANCH = 'main'
     }
 
     stages {
-        stage('Checkout Code') {
-            steps {
-                script {
-                    checkout([$class: 'GitSCM',
-                        branches: [[name: "*/${BRANCH}"]],
-                        userRemoteConfigs: [[url: "${REPO_URL}"]]
-                    ])
-                }
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t ${IMAGE_NAME} ."
@@ -51,3 +38,4 @@ pipeline {
         }
     }
 }
+

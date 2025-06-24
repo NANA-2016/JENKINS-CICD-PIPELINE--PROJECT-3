@@ -5,7 +5,7 @@
   #      IMAGE_NAME = 'jenkins-html-project'
    #     CONTAINER_NAME = 'jenkins-html-container'
     #    HOST_PORT = '8082'
-    }#
+  #  }
 #
  #   stages {
   #      stage('Build Docker Image') {

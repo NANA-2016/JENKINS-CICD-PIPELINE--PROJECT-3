@@ -1,48 +1,40 @@
-#pipeline {
- #   agent any
-#
- #   environment {
-  #      IMAGE_NAME = 'jenkins-html-project'
-   #     CONTAINER_NAME = 'jenkins-html-container'
-    #    HOST_PORT = '8082'
-  #  }
-#
- #   stages {
-  #      stage('Build Docker Image') {
-   #         steps {
-    #            sh "docker build -t ${IMAGE_NAME} ."
-     #       }
-      #  }
-#
- #       stage('Run Docker Container') {
-  #          steps {
-   #             sh "docker stop ${CONTAINER_NAME} || true"
-    #            sh "docker rm ${CONTAINER_NAME} || true"
-     #           sh "docker run -d -p ${HOST_PORT}:80 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
-      #      }
-       # }
-    #}
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'jenkins-html-project'
+        CONTAINER_NAME = 'jenkins-html-container'
+        HOST_PORT = '8082'
+        REPO_URL = 'https://github.com/NANA-2016/JENKINS-CICD-PIPELINE--PROJECT-3.git'
+        BRANCH = 'main'
+    }
+
     stages {
-        stage('Clone Repo') {
+        stage('Checkout Code') {
             steps {
-                checkout scm
+                script {
+                    checkout([$class: 'GitSCM',
+                        branches: [[name: "*/${BRANCH}"]],
+                        userRemoteConfigs: [[url: "${REPO_URL}"]]
+                    ])
+                }
             }
         }
 
-        stage('Serve HTML on Port 8082') {
+        stage('Build Docker Image') {
             steps {
-                sh '''
-                    nohup python3 -m http.server 8082 > server.log 2>&1 &
-                    sleep 5
-                '''
-                echo 'HTML server started on port 8082'
+                sh "docker build -t ${IMAGE_NAME} ."
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                sh "docker stop ${CONTAINER_NAME} || true"
+                sh "docker rm ${CONTAINER_NAME} || true"
+                sh "docker run -d -p ${HOST_PORT}:80 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
             }
         }
     }
-}
 
     post {
         always {

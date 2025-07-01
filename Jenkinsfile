@@ -36,15 +36,15 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            echo 'Cleaning up...'
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                sh "docker stop ${CONTAINER_NAME} || true"
-                sh "docker rm ${CONTAINER_NAME} || true"
-                sh "docker rmi ${IMAGE_NAME} || true"
-            }
-        }
+#    post {
+ #       always {
+  #          echo 'Cleaning up...'
+   #         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+    #            sh "docker stop ${CONTAINER_NAME} || true"
+     #           sh "docker rm ${CONTAINER_NAME} || true"
+      #          sh "docker rmi ${IMAGE_NAME} || true"
+       #     }
+        #}
         success {
             echo '✅ Pipeline completed successfully!'
         }
